@@ -28,11 +28,17 @@ class LoadNextEventMockRepository implements LoadNextEventRepository{
 }
 
 void main() {
-  test('should load event data from a repository ', () async {
-    final groupdId = Random().nextInt(50_000).toString();
+  late String groupdId;
+  late LoadNextEventMockRepository repo;
+  late NextEventLoader sut;
 
-    final repo = LoadNextEventMockRepository();
-    final sut = NextEventLoader(repo: repo);
+  setUp(() {
+    groupdId = Random().nextInt(50_000).toString();
+    repo = LoadNextEventMockRepository();
+    sut = NextEventLoader(repo: repo);
+  });
+
+  test('should load event data from a repository ', () async {
     await sut(groupId: groupdId);
 
     expect(repo.groupId, groupdId);
