@@ -85,12 +85,19 @@ class HttpClientSpy implements Client {
 }
 
 void main() {
-  test('should request with correct method', () async {
-    final groupId = anyString();
-    const url = 'https://domain.com/api/groups/:groupId/next_event';
-    final httpClient = HttpClientSpy();
-    final sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
+  const url = 'https://domain.com/api/groups/:groupId/next_event';
 
+  late String groupId;
+  late HttpClientSpy httpClient;
+  late LoadNextEventHttpRepository sut;
+
+  setUp(() {
+    groupId = anyString();
+    httpClient = HttpClientSpy();
+    sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
+  });
+
+  test('should request with correct method', () async {
     await sut.loadNextEvent(groupId: groupId);
 
     expect(httpClient.method, 'get');
@@ -98,11 +105,6 @@ void main() {
   });
 
   test('should request with correct url', () async {
-    final groupId = anyString();
-    const url = 'https://domain.com/api/groups/:groupId/next_event';
-    final httpClient = HttpClientSpy();
-    final sut = LoadNextEventHttpRepository(httpClient: httpClient, url: url);
-
     await sut.loadNextEvent(groupId: groupId);
 
     expect(httpClient.url, 'https://domain.com/api/groups/$groupId/next_event');
