@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:advanced_flutter/domain/entities/next_event.dart';
 import 'package:advanced_flutter/domain/entities/next_event_player.dart';
 import 'package:advanced_flutter/domain/repositories/load_next_event_repository.dart';
@@ -7,7 +5,9 @@ import 'package:advanced_flutter/domain/usecases/next_event_loader.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 
-class LoadNextEventSpyRepository implements LoadNextEventRepository{
+import '../../helpers/fakes.dart';
+
+class LoadNextEventSpyRepository implements LoadNextEventRepository {
   String? groupId;
   var callsCount = 0;
   NextEvent? output;
@@ -18,7 +18,7 @@ class LoadNextEventSpyRepository implements LoadNextEventRepository{
     this.groupId = groupId;
     callsCount++;
 
-    if(error != null) {
+    if (error != null) {
       throw error!;
     }
 
@@ -32,21 +32,21 @@ void main() {
   late NextEventLoader sut;
 
   setUp(() {
-    groupdId = Random().nextInt(50_000).toString();
+    groupdId = anyString();
     repo = LoadNextEventSpyRepository();
     repo.output = NextEvent(
       groupName: 'any_name',
       date: DateTime.now(),
       players: [
         NextEventPlayer(
-          id: Random().nextInt(50_000).toString(),
+          id: anyString(),
           name: 'Henrique Martins',
           confirmationDate: DateTime.now(),
           isConfirmed: true,
           photo: 'any_photo',
         ),
         NextEventPlayer(
-          id: Random().nextInt(50_000).toString(),
+          id: anyString(),
           name: 'Isaac Melo Alves Martins',
           confirmationDate: DateTime.now(),
           isConfirmed: false,
@@ -75,13 +75,15 @@ void main() {
 
     expect(event.players[0].id, repo.output?.players[0].id);
     expect(event.players[0].name, repo.output?.players[0].name);
-    expect(event.players[0].confirmationDate, repo.output?.players[0].confirmationDate);
+    expect(event.players[0].confirmationDate,
+        repo.output?.players[0].confirmationDate);
     expect(event.players[0].isConfirmed, repo.output?.players[0].isConfirmed);
     expect(event.players[0].photo, repo.output?.players[0].photo);
 
     expect(event.players[1].id, repo.output?.players[1].id);
     expect(event.players[1].name, repo.output?.players[1].name);
-    expect(event.players[1].confirmationDate, repo.output?.players[1].confirmationDate);
+    expect(event.players[1].confirmationDate,
+        repo.output?.players[1].confirmationDate);
     expect(event.players[1].isConfirmed, repo.output?.players[1].isConfirmed);
     expect(event.players[1].position, repo.output?.players[1].position);
   });
