@@ -1,6 +1,8 @@
+import 'package:advanced_flutter/domain/entities/domain_error.dart';
 import 'package:dartx/dartx.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
+
+import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/fakes.dart';
 import 'client_spy.dart';
@@ -23,7 +25,13 @@ class HttpClient {
       });
     final uri = _buildUri(url: url, params: params, queryString: queryString);
 
-    await client.get(uri, headers: allHeaders);
+    final response = await client.get(uri, headers: allHeaders);
+    switch (response.statusCode) {
+      case 200:
+        break;
+      default:
+        throw DomainError.unexpected;
+    }
   }
 
   Uri _buildUri({
@@ -118,6 +126,30 @@ void main() {
       );
 
       expect(client.url, 'http://anyurl.com/api/v1/v2?q1=v3&q2=v4');
+    });
+
+    test('should throw UnexpectedError on 400', () async {
+      client.simulateBadRequestError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should throw UnexpectedError on 403', () async {
+      client.simulateForbiddenError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should throw UnexpectedError on 404', () async {
+      client.simulateNotFoundError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
+    });
+
+    test('should throw UnexpectedError on 500', () async {
+      client.simulateServerError();
+      final future = sut.get(url: url);
+      expect(future, throwsA(DomainError.unexpected));
     });
   });
 }
