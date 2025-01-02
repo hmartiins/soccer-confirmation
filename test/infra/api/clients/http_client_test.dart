@@ -9,14 +9,25 @@ class HttpClient {
 
   HttpClient({required this.client});
 
-  Future<void> get({required String url, Map<String, String>? headers}) async {
+  Future<void> get({
+    required String url,
+    Map<String, String>? headers,
+    Map<String, String>? params,
+  }) async {
     final allHeaders = (headers ?? {})
       ..addAll({
         'content-type': 'application/json',
         'accept': 'application/json',
       });
+    final uri = _buildUri(url: url, params: params);
 
-    await client.get(Uri.parse(url), headers: allHeaders);
+    await client.get(uri, headers: allHeaders);
+  }
+
+  Uri _buildUri({required String url, Map<String, String>? params}) {
+    params?.forEach((key, value) => url = url.replaceFirst(':$key', value));
+
+    return Uri.parse(url);
   }
 }
 
@@ -54,6 +65,13 @@ void main() {
       await sut.get(url: url, headers: {'h1': 'value1', 'h2': 'value2'});
       expect(client.headers?['h1'], 'value1');
       expect(client.headers?['h2'], 'value2');
+    });
+
+    test('should request with correct params', () async {
+      url = 'http://anyurl.com/api/:p1/:p2';
+      await sut.get(url: url, params: {'p1': 'value1', 'p2': 'value2'});
+
+      expect(client.url, 'http://anyurl.com/api/value1/value2');
     });
   });
 }
