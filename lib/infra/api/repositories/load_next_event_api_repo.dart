@@ -19,6 +19,6 @@ final class LoadNextEventApiRepository implements LoadNextEventRepository {
 
     if (json == null) throw UnexpectedError();
 
-    return NextEventMapper.toObject(json);
+    return NextEventMapper().toObject(json);
   }
 }
