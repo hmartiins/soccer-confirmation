@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:advanced_flutter/domain/entities/domain_error.dart';
+import 'package:advanced_flutter/domain/entities/errors.dart';
 import 'package:advanced_flutter/infra/api/clients/http_get_client.dart';
 import 'package:advanced_flutter/infra/types/json.dart';
 import 'package:dartx/dartx.dart';
@@ -39,9 +39,9 @@ final class HttpAdapter implements HttpGetClient {
       case 204:
         return null;
       case 401:
-        throw DomainError.sessionExpired;
+        throw SessionExpiredError();
       default:
-        throw DomainError.unexpected;
+        throw UnexpectedError();
     }
   }
 
