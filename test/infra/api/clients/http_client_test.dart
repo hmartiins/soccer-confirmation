@@ -83,5 +83,12 @@ void main() {
 
       expect(client.url, 'http://anyurl.com/api/value1');
     });
+
+    test('should request with invalid params', () async {
+      url = 'http://anyurl.com/api/:p1/:p2';
+      await sut.get(url: url, params: {'p3': 'value3'});
+
+      expect(client.url, url);
+    });
   });
 }
