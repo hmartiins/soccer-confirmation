@@ -44,9 +44,14 @@ void main() {
     });
 
     test('should append headers', () async {
-      await sut.get(url: url, headers: {'h1': 'value1', 'h2': 'value2'});
+      await sut.get(url: url, headers: {
+        'h1': 'value1',
+        'h2': 'value2',
+        'h3': 123,
+      });
       expect(client.headers?['h1'], 'value1');
       expect(client.headers?['h2'], 'value2');
+      expect(client.headers?['h3'], '123');
     });
 
     test('should request with correct params', () async {
