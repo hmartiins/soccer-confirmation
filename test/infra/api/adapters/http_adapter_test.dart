@@ -77,9 +77,10 @@ void main() {
     });
 
     test('should request with correct queryStrings', () async {
-      await sut.get(url: url, queryString: {'q1': 'value1', 'q2': 'value2'});
+      await sut.get(
+          url: url, queryString: {'q1': 'value1', 'q2': 'value2', 'q3': 123});
 
-      expect(client.url, '$url?q1=value1&q2=value2');
+      expect(client.url, '$url?q1=value1&q2=value2&q3=123');
     });
 
     test('should request with correct queryStrings and params', () async {

@@ -17,7 +17,7 @@ final class HttpAdapter implements HttpGetClient {
     required String url,
     Json? headers,
     Json? params,
-    Map<String, String>? queryString,
+    Json? queryString,
   }) async {
     final response = await client.get(
       _buildUri(url: url, params: params, queryString: queryString),
@@ -62,7 +62,7 @@ final class HttpAdapter implements HttpGetClient {
   Uri _buildUri({
     required String url,
     Json? params,
-    Map<String, String>? queryString,
+    Json? queryString,
   }) {
     params?.forEach((key, value) =>
         url = url.replaceFirst(':$key', value?.toString() ?? ''));
