@@ -199,6 +199,7 @@ void main() {
     presenter.emitNextEvent();
     await tester.pump();
     expect(find.text('DENTRO - GOLEIROS'), findsNothing);
+    expect(find.text('DENTRO - JOGADORES'), findsNothing);
   });
 
   testWidgets('should present players section', (tester) async {
