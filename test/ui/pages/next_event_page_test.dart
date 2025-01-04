@@ -51,17 +51,43 @@ class _NextEventPageState extends State<NextEventPage> {
           if (snapshot.hasError) {
             return const Text('Erro');
           }
+
+          final viewModel = snapshot.data!;
           return ListView(
             children: [
-              const Text('DENTRO - GOLEIROS'),
-              Text(snapshot.data!.goalkeepers.length.toString()),
-              ...snapshot.data!.goalkeepers.map(
-                (player) => Text(player.name),
-              ),
+              if (viewModel.goalkeepers.isNotEmpty)
+                ListSection(
+                  title: 'DENTRO - GOLEIROS',
+                  items: viewModel.goalkeepers,
+                ),
             ],
           );
         },
       ),
+    );
+  }
+}
+
+final class ListSection extends StatelessWidget {
+  final String title;
+  final List<NextEventPlayerViewModel> items;
+
+  const ListSection({
+    super.key,
+    required this.title,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(title),
+        Text(items.length.toString()),
+        ...items.map(
+          (player) => Text(player.name),
+        ),
+      ],
     );
   }
 }
@@ -155,5 +181,12 @@ void main() {
     expect(find.text('Henrique'), findsOne);
     expect(find.text('Rafael'), findsOne);
     expect(find.text('Isaac'), findsOne);
+  });
+
+  testWidgets('should hide all sections', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEvent();
+    await tester.pump();
+    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
   });
 }
