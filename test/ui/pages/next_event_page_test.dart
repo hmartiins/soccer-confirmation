@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:rxdart/subjects.dart';
 
 import '../../helpers/fakes.dart';
 
@@ -26,19 +27,36 @@ class _NextEventPageState extends State<NextEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: CircularProgressIndicator(),
+    return Scaffold(
+      body: StreamBuilder(
+        stream: widget.presenter.nextEventStream,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.active) {
+            return const CircularProgressIndicator();
+          }
+          return Text('Next Event');
+        },
+      ),
     );
   }
 }
 
 abstract class NextEventPresenter {
+  Stream get nextEventStream;
   void loadNextEvent({required String groupId});
 }
 
 final class NextEventPresenterSpy implements NextEventPresenter {
   int loadCallsCount = 0;
   String? groupId;
+  var nextEventSubjet = BehaviorSubject();
+
+  @override
+  Stream get nextEventStream => nextEventSubjet.stream;
+
+  void emitNextEvent() {
+    nextEventSubjet.add('');
+  }
 
   @override
   void loadNextEvent({required String groupId}) {
@@ -69,5 +87,13 @@ void main() {
   testWidgets('should present spinner while data is loading', (tester) async {
     await tester.pumpWidget(sut);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('should hide spinner on load success', (tester) async {
+    await tester.pumpWidget(sut);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    presenter.emitNextEvent();
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsNothing);
   });
 }
