@@ -209,6 +209,7 @@ void main() {
     await tester.pump();
     expect(find.text('DENTRO - GOLEIROS'), findsNothing);
     expect(find.text('DENTRO - JOGADORES'), findsNothing);
+    expect(find.text('FORA'), findsNothing);
   });
 
   testWidgets('should present players section', (tester) async {
