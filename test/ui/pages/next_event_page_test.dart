@@ -1,28 +1,9 @@
+import 'package:advanced_flutter/presentation/presenters/next_event_presenter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rxdart/subjects.dart';
 
 import '../../helpers/fakes.dart';
-
-final class NextEventViewModel {
-  final List<NextEventPlayerViewModel> goalkeepers;
-  final List<NextEventPlayerViewModel> players;
-  final List<NextEventPlayerViewModel> out;
-  final List<NextEventPlayerViewModel> doubt;
-
-  const NextEventViewModel({
-    this.players = const [],
-    this.goalkeepers = const [],
-    this.out = const [],
-    this.doubt = const [],
-  });
-}
-
-final class NextEventPlayerViewModel {
-  final String name;
-
-  const NextEventPlayerViewModel({required this.name});
-}
 
 final class NextEventPage extends StatefulWidget {
   final NextEventPresenter presenter;
@@ -111,11 +92,6 @@ final class ListSection extends StatelessWidget {
       ],
     );
   }
-}
-
-abstract class NextEventPresenter {
-  Stream<NextEventViewModel> get nextEventStream;
-  void loadNextEvent({required String groupId});
 }
 
 final class NextEventPresenterSpy implements NextEventPresenter {
