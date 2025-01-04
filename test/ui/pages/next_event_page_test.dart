@@ -46,15 +46,19 @@ final class NextEventPresenterSpy implements NextEventPresenter {
 }
 
 void main() {
-  testWidgets('should load event data on page init', (tester) async {
-    final presenter = NextEventPresenterSpy();
-    final groupId = anyString();
-    final sut = MaterialApp(
-      home: NextEventPage(
-        presenter: presenter,
-        groupId: groupId,
-      ),
+  late NextEventPresenterSpy presenter;
+  late String groupId;
+  late Widget sut;
+
+  setUp(() {
+    presenter = NextEventPresenterSpy();
+    groupId = anyString();
+    sut = MaterialApp(
+      home: NextEventPage(presenter: presenter, groupId: groupId),
     );
+  });
+
+  testWidgets('should load event data on page init', (tester) async {
     await tester.pumpWidget(sut);
     expect(presenter.loadCallsCount, 1);
     expect(presenter.groupId, groupId);
