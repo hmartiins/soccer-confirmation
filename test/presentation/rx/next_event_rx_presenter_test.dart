@@ -21,11 +21,11 @@ final class NextEventRxPresenter {
     bool isReload = false,
   }) async {
     try {
-      isBusySubject.add(true);
+      if (isReload) isBusySubject.add(true);
       await nextEventLoader(groupId: groupId);
     } catch (error) {
       nextEventSubject.addError(error);
-      isBusySubject.add(false);
+      if (isReload) isBusySubject.add(false);
     }
   }
 }
@@ -64,5 +64,12 @@ void main() {
     expectLater(sut.nextEventStream, emitsError(nextEventLoader.error));
     expectLater(sut.isBusyStream, emitsInOrder([true, false]));
     await sut.loadNextEvent(groupId: groupId, isReload: true);
+  });
+
+  test('should emit correct events on load with error', () async {
+    nextEventLoader.error = Error();
+    expectLater(sut.nextEventStream, emitsError(nextEventLoader.error));
+    sut.isBusyStream.listen(neverCalled);
+    await sut.loadNextEvent(groupId: groupId);
   });
 }
