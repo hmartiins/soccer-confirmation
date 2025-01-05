@@ -28,7 +28,9 @@ class _NextEventPageState extends State<NextEventPage> {
   }
 
   void showLoading() => showDialog(
-      context: context, builder: (context) => CircularProgressIndicator());
+        context: context,
+        builder: (context) => CircularProgressIndicator(),
+      );
 
   void hideLoading() => Navigator.of(context).maybePop();
 
@@ -56,29 +58,34 @@ class _NextEventPageState extends State<NextEventPage> {
           }
 
           final viewModel = snapshot.data!;
-          return ListView(
-            children: [
-              if (viewModel.goalkeepers.isNotEmpty)
-                ListSection(
-                  title: 'DENTRO - GOLEIROS',
-                  items: viewModel.goalkeepers,
-                ),
-              if (viewModel.players.isNotEmpty)
-                ListSection(
-                  title: 'DENTRO - JOGADORES',
-                  items: viewModel.players,
-                ),
-              if (viewModel.out.isNotEmpty)
-                ListSection(
-                  title: 'FORA',
-                  items: viewModel.out,
-                ),
-              if (viewModel.doubt.isNotEmpty)
-                ListSection(
-                  title: 'DÚVIDA',
-                  items: viewModel.doubt,
-                ),
-            ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              widget.presenter.reloadNextEvent(groupId: widget.groupId);
+            },
+            child: ListView(
+              children: [
+                if (viewModel.goalkeepers.isNotEmpty)
+                  ListSection(
+                    title: 'DENTRO - GOLEIROS',
+                    items: viewModel.goalkeepers,
+                  ),
+                if (viewModel.players.isNotEmpty)
+                  ListSection(
+                    title: 'DENTRO - JOGADORES',
+                    items: viewModel.players,
+                  ),
+                if (viewModel.out.isNotEmpty)
+                  ListSection(
+                    title: 'FORA',
+                    items: viewModel.out,
+                  ),
+                if (viewModel.doubt.isNotEmpty)
+                  ListSection(
+                    title: 'DÚVIDA',
+                    items: viewModel.doubt,
+                  ),
+              ],
+            ),
           );
         },
       ),
