@@ -10,8 +10,7 @@ import 'package:rxdart/subjects.dart';
 import '../../helpers/fakes.dart';
 
 final class NextEventPresenterSpy implements NextEventPresenter {
-  int loadCallsCount = 0;
-  int reloadCallsCount = 0;
+  int callsCount = 0;
   String? groupId;
   bool? isReload;
   var nextEventSubject = BehaviorSubject<NextEventViewModel>();
@@ -51,14 +50,9 @@ final class NextEventPresenterSpy implements NextEventPresenter {
 
   @override
   void loadNextEvent({required String groupId, bool isReload = false}) {
-    loadCallsCount++;
+    callsCount++;
     this.groupId = groupId;
     this.isReload = isReload;
-  }
-
-  @override
-  void reloadNextEvent({required String groupId}) {
-    reloadCallsCount++;
   }
 }
 
@@ -77,7 +71,7 @@ void main() {
 
   testWidgets('should load event data on page init', (tester) async {
     await tester.pumpWidget(sut);
-    expect(presenter.loadCallsCount, 1);
+    expect(presenter.callsCount, 1);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, false);
   });
@@ -215,14 +209,14 @@ void main() {
 
   testWidgets('should load event data on reload click', (tester) async {
     await tester.pumpWidget(sut);
-    expect(presenter.loadCallsCount, 1);
+    expect(presenter.callsCount, 1);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, false);
 
     presenter.emitError();
     await tester.pump();
     await tester.tap(find.text('Recarregar'));
-    expect(presenter.loadCallsCount, 2);
+    expect(presenter.callsCount, 2);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, true);
   });
@@ -241,7 +235,7 @@ void main() {
 
   testWidgets('should load event data on pull to refresh', (tester) async {
     await tester.pumpWidget(sut);
-    expect(presenter.loadCallsCount, 1);
+    expect(presenter.callsCount, 1);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, false);
     presenter.emitNextEvent();
@@ -252,7 +246,7 @@ void main() {
       800,
     );
     await tester.pumpAndSettle();
-    expect(presenter.loadCallsCount, 2);
+    expect(presenter.callsCount, 2);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, true);
   });
