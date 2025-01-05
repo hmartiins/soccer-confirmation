@@ -1,5 +1,7 @@
 import 'package:advanced_flutter/presentation/presenters/next_event_presenter.dart';
+import 'package:advanced_flutter/ui/widgets/player_photo.dart';
 import 'package:advanced_flutter/ui/widgets/player_position.dart';
+import 'package:advanced_flutter/ui/widgets/player_status.dart';
 import 'package:flutter/material.dart';
 
 final class NextEventPage extends StatefulWidget {
@@ -88,6 +90,7 @@ final class ListSection extends StatelessWidget {
             children: [
               Text(player.name),
               PlayerPosition(position: player.position),
+              PlayerStatus(isConfirmed: player.isConfirmed),
             ],
           ),
         ),
