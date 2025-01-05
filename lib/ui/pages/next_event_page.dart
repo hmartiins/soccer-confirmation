@@ -35,7 +35,15 @@ class _NextEventPageState extends State<NextEventPage> {
             return const CircularProgressIndicator();
           }
           if (snapshot.hasError) {
-            return const Text('Erro');
+            return Column(
+              children: [
+                const Text('Algo errado aconteceu. Tente novamente.'),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Recarregar'),
+                ),
+              ],
+            );
           }
 
           final viewModel = snapshot.data!;
