@@ -22,8 +22,15 @@ class _NextEventPageState extends State<NextEventPage> {
   @override
   void initState() {
     widget.presenter.loadNextEvent(groupId: widget.groupId);
+    widget.presenter.isBusyStream
+        .listen((isBusy) => isBusy ? showLoading() : hideLoading());
     super.initState();
   }
+
+  void showLoading() => showDialog(
+      context: context, builder: (context) => CircularProgressIndicator());
+
+  void hideLoading() => Navigator.of(context).maybePop();
 
   @override
   Widget build(BuildContext context) {
