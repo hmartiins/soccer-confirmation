@@ -1,5 +1,6 @@
 import 'package:advanced_flutter/presentation/presenters/next_event_presenter.dart';
 import 'package:advanced_flutter/ui/pages/next_event_page.dart';
+import 'package:advanced_flutter/ui/widgets/player_position.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rxdart/subjects.dart';
@@ -98,16 +99,7 @@ void main() {
     expect(find.text('Henrique'), findsOne);
     expect(find.text('Rafael'), findsOne);
     expect(find.text('Isaac'), findsOne);
-  });
-
-  testWidgets('should hide all sections', (tester) async {
-    await tester.pumpWidget(sut);
-    presenter.emitNextEvent();
-    await tester.pump();
-    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
-    expect(find.text('DENTRO - JOGADORES'), findsNothing);
-    expect(find.text('FORA'), findsNothing);
-    expect(find.text('DÚVIDA'), findsNothing);
+    expect(find.byType(PlayerPosition), findsExactly(3));
   });
 
   testWidgets('should present players section', (tester) async {
@@ -125,6 +117,7 @@ void main() {
     expect(find.text('Henrique'), findsOne);
     expect(find.text('Rafael'), findsOne);
     expect(find.text('Isaac'), findsOne);
+    expect(find.byType(PlayerPosition), findsExactly(3));
   });
 
   testWidgets('should present out section', (tester) async {
@@ -142,6 +135,7 @@ void main() {
     expect(find.text('Henrique'), findsOne);
     expect(find.text('Rafael'), findsOne);
     expect(find.text('Isaac'), findsOne);
+    expect(find.byType(PlayerPosition), findsExactly(3));
   });
 
   testWidgets('should present doubt section', (tester) async {
@@ -159,5 +153,17 @@ void main() {
     expect(find.text('Henrique'), findsOne);
     expect(find.text('Rafael'), findsOne);
     expect(find.text('Isaac'), findsOne);
+    expect(find.byType(PlayerPosition), findsExactly(3));
+  });
+
+  testWidgets('should hide all sections', (tester) async {
+    await tester.pumpWidget(sut);
+    presenter.emitNextEvent();
+    await tester.pump();
+    expect(find.text('DENTRO - GOLEIROS'), findsNothing);
+    expect(find.text('DENTRO - JOGADORES'), findsNothing);
+    expect(find.text('FORA'), findsNothing);
+    expect(find.text('DÚVIDA'), findsNothing);
+    expect(find.byType(PlayerPosition), findsExactly(0));
   });
 }
