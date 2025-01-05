@@ -47,6 +47,8 @@ final class NextEventRxPresenter {
       NextEventPlayerViewModel(
         name: player.name,
         initials: player.initials,
+        photo: player.photo,
+        position: player.position,
       );
 }
 
@@ -142,6 +144,25 @@ void main() {
       expect(event.doubt[0].name, 'A');
       expect(event.doubt[1].name, 'C');
       expect(event.doubt[2].name, 'D');
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should map doubt player', () async {
+    final player = NextEventPlayer(
+      id: anyString(),
+      name: anyString(),
+      isConfirmed: anyBool(),
+      photo: anyString(),
+      position: anyString(),
+    );
+    nextEventLoader.simulatePlayers([player]);
+    sut.nextEventStream.listen((event) {
+      expect(event.doubt[0].name, player.name);
+      expect(event.doubt[0].initials, player.initials);
+      expect(event.doubt[0].photo, player.photo);
+      expect(event.doubt[0].position, player.position);
+      expect(event.doubt[0].isConfirmed, null);
     });
     await sut.loadNextEvent(groupId: groupId);
   });
