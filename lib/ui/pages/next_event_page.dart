@@ -88,6 +88,10 @@ final class ListSection extends StatelessWidget {
         ...items.map(
           (player) => Row(
             children: [
+              PlayerPhoto(
+                initials: player.initials,
+                photo: player.photo,
+              ),
               Text(player.name),
               PlayerPosition(position: player.position),
               PlayerStatus(isConfirmed: player.isConfirmed),

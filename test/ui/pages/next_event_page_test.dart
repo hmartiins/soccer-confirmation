@@ -1,5 +1,6 @@
 import 'package:advanced_flutter/presentation/presenters/next_event_presenter.dart';
 import 'package:advanced_flutter/ui/pages/next_event_page.dart';
+import 'package:advanced_flutter/ui/widgets/player_photo.dart';
 import 'package:advanced_flutter/ui/widgets/player_position.dart';
 import 'package:advanced_flutter/ui/widgets/player_status.dart';
 import 'package:flutter/material.dart';
@@ -88,10 +89,10 @@ void main() {
   testWidgets('should present goalkeepers section', (tester) async {
     await tester.pumpWidget(sut);
     presenter.emitNextEventWith(
-      goalkeepers: const [
-        NextEventPlayerViewModel(name: 'Henrique'),
-        NextEventPlayerViewModel(name: 'Rafael'),
-        NextEventPlayerViewModel(name: 'Isaac'),
+      goalkeepers: [
+        NextEventPlayerViewModel(name: 'Henrique', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Rafael', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Isaac', initials: anyString()),
       ],
     );
     await tester.pump();
@@ -107,10 +108,10 @@ void main() {
   testWidgets('should present players section', (tester) async {
     await tester.pumpWidget(sut);
     presenter.emitNextEventWith(
-      players: const [
-        NextEventPlayerViewModel(name: 'Henrique'),
-        NextEventPlayerViewModel(name: 'Rafael'),
-        NextEventPlayerViewModel(name: 'Isaac'),
+      players: [
+        NextEventPlayerViewModel(name: 'Henrique', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Rafael', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Isaac', initials: anyString()),
       ],
     );
     await tester.pump();
@@ -121,15 +122,16 @@ void main() {
     expect(find.text('Isaac'), findsOne);
     expect(find.byType(PlayerPosition), findsExactly(3));
     expect(find.byType(PlayerStatus), findsExactly(3));
+    expect(find.byType(PlayerPhoto), findsExactly(3));
   });
 
   testWidgets('should present out section', (tester) async {
     await tester.pumpWidget(sut);
     presenter.emitNextEventWith(
-      out: const [
-        NextEventPlayerViewModel(name: 'Henrique'),
-        NextEventPlayerViewModel(name: 'Rafael'),
-        NextEventPlayerViewModel(name: 'Isaac'),
+      out: [
+        NextEventPlayerViewModel(name: 'Henrique', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Rafael', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Isaac', initials: anyString()),
       ],
     );
     await tester.pump();
@@ -140,15 +142,16 @@ void main() {
     expect(find.text('Isaac'), findsOne);
     expect(find.byType(PlayerPosition), findsExactly(3));
     expect(find.byType(PlayerStatus), findsExactly(3));
+    expect(find.byType(PlayerPhoto), findsExactly(3));
   });
 
   testWidgets('should present doubt section', (tester) async {
     await tester.pumpWidget(sut);
     presenter.emitNextEventWith(
-      doubt: const [
-        NextEventPlayerViewModel(name: 'Henrique'),
-        NextEventPlayerViewModel(name: 'Rafael'),
-        NextEventPlayerViewModel(name: 'Isaac'),
+      doubt: [
+        NextEventPlayerViewModel(name: 'Henrique', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Rafael', initials: anyString()),
+        NextEventPlayerViewModel(name: 'Isaac', initials: anyString()),
       ],
     );
     await tester.pump();
@@ -159,6 +162,7 @@ void main() {
     expect(find.text('Isaac'), findsOne);
     expect(find.byType(PlayerPosition), findsExactly(3));
     expect(find.byType(PlayerStatus), findsExactly(3));
+    expect(find.byType(PlayerPhoto), findsExactly(3));
   });
 
   testWidgets('should hide all sections', (tester) async {
@@ -171,5 +175,6 @@ void main() {
     expect(find.text('DÚVIDA'), findsNothing);
     expect(find.byType(PlayerPosition), findsExactly(0));
     expect(find.byType(PlayerStatus), findsExactly(0));
+    expect(find.byType(PlayerPhoto), findsExactly(0));
   });
 }
