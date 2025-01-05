@@ -51,7 +51,7 @@ void main() {
   setUp(() {
     nextEventLoader = NextEventLoaderSpy();
     groupId = anyString();
-    sut = NextEventRxPresenter(nextEventLoader: nextEventLoader);
+    sut = NextEventRxPresenter(nextEventLoader: nextEventLoader.call);
   });
 
   test('should get event data', () async {
