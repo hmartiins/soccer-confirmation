@@ -55,6 +55,14 @@ final class NextEventRxPresenter {
             .sortedBy((player) => player.confirmationDate!)
             .map(_mapPlayer)
             .toList(),
+        players: event.players
+            .where((player) =>
+                player.confirmationDate != null &&
+                player.isConfirmed &&
+                player.position != 'goalkeeper')
+            .sortedBy((player) => player.confirmationDate!)
+            .map(_mapPlayer)
+            .toList(),
       );
 
   NextEventPlayerViewModel _mapPlayer(NextEventPlayer player) =>
@@ -309,6 +317,55 @@ void main() {
       expect(event.goalkeepers[0].photo, player.photo);
       expect(event.goalkeepers[0].position, player.position);
       expect(event.goalkeepers[0].isConfirmed, player.isConfirmed);
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should build players list sorted by confirmation date', () async {
+    nextEventLoader.simulatePlayers([
+      NextEventPlayer(
+        id: anyString(),
+        name: 'C',
+        isConfirmed: true,
+        confirmationDate: DateTime(2024, 1, 1, 10),
+        position: 'goalkeeper',
+      ),
+      NextEventPlayer(
+        id: anyString(),
+        name: 'A',
+        isConfirmed: anyBool(),
+      ),
+      NextEventPlayer(
+        id: anyString(),
+        name: 'B',
+        isConfirmed: true,
+        confirmationDate: DateTime(2024, 1, 1, 11),
+        position: 'defender',
+      ),
+      NextEventPlayer(
+        id: anyString(),
+        name: 'E',
+        isConfirmed: false,
+        confirmationDate: DateTime(2024, 1, 1, 09),
+      ),
+      NextEventPlayer(
+        id: anyString(),
+        name: 'D',
+        isConfirmed: true,
+        confirmationDate: DateTime(2024, 1, 1, 12),
+      ),
+      NextEventPlayer(
+        id: anyString(),
+        name: 'F',
+        isConfirmed: true,
+        confirmationDate: DateTime(2024, 1, 1, 8),
+        position: 'goalkeeper',
+      ),
+    ]);
+    sut.nextEventStream.listen((event) {
+      expect(event.players.length, 2);
+      expect(event.players[0].name, 'B');
+      expect(event.players[1].name, 'D');
     });
     await sut.loadNextEvent(groupId: groupId);
   });
