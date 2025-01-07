@@ -369,4 +369,23 @@ void main() {
     });
     await sut.loadNextEvent(groupId: groupId);
   });
+
+  test('should map player', () async {
+    final player = NextEventPlayer(
+      id: anyString(),
+      name: anyString(),
+      isConfirmed: true,
+      photo: anyString(),
+      confirmationDate: anyDateTime(),
+    );
+    nextEventLoader.simulatePlayers([player]);
+    sut.nextEventStream.listen((event) {
+      expect(event.players[0].name, player.name);
+      expect(event.players[0].initials, player.initials);
+      expect(event.players[0].photo, player.photo);
+      expect(event.players[0].position, player.position);
+      expect(event.players[0].isConfirmed, player.isConfirmed);
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
 }
