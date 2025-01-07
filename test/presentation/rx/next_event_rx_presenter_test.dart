@@ -10,16 +10,19 @@ import 'package:rxdart/subjects.dart';
 
 import '../../helpers/fakes.dart';
 
-final class NextEventRxPresenter {
+final class NextEventRxPresenter implements NextEventPresenter {
   final Future<NextEvent> Function({required String groupId}) nextEventLoader;
   final nextEventSubject = BehaviorSubject<NextEventViewModel>();
   final isBusySubject = BehaviorSubject<bool>();
 
   NextEventRxPresenter({required this.nextEventLoader});
 
+  @override
   Stream<NextEventViewModel> get nextEventStream => nextEventSubject.stream;
+  @override
   Stream<bool> get isBusyStream => isBusySubject.stream;
 
+  @override
   Future<void> loadNextEvent({
     required String groupId,
     bool isReload = false,
@@ -294,7 +297,7 @@ void main() {
       ),
     ]);
     sut.nextEventStream.listen((event) {
-      expect(event.out.length, 2);
+      expect(event.goalkeepers.length, 2);
       expect(event.goalkeepers[0].name, 'F');
       expect(event.goalkeepers[1].name, 'C');
     });
