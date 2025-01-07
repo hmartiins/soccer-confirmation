@@ -63,7 +63,8 @@ final class NextEventRxPresenter {
         initials: player.initials,
         photo: player.photo,
         position: player.position,
-        isConfirmed: player.confirmationDate == null ? null : false,
+        isConfirmed:
+            player.confirmationDate == null ? null : player.isConfirmed,
       );
 }
 
@@ -288,6 +289,26 @@ void main() {
       expect(event.out.length, 2);
       expect(event.goalkeepers[0].name, 'F');
       expect(event.goalkeepers[1].name, 'C');
+    });
+    await sut.loadNextEvent(groupId: groupId);
+  });
+
+  test('should map goalkeeper', () async {
+    final player = NextEventPlayer(
+      id: anyString(),
+      name: anyString(),
+      isConfirmed: true,
+      photo: anyString(),
+      confirmationDate: anyDateTime(),
+      position: 'goalkeeper',
+    );
+    nextEventLoader.simulatePlayers([player]);
+    sut.nextEventStream.listen((event) {
+      expect(event.goalkeepers[0].name, player.name);
+      expect(event.goalkeepers[0].initials, player.initials);
+      expect(event.goalkeepers[0].photo, player.photo);
+      expect(event.goalkeepers[0].position, player.position);
+      expect(event.goalkeepers[0].isConfirmed, player.isConfirmed);
     });
     await sut.loadNextEvent(groupId: groupId);
   });
