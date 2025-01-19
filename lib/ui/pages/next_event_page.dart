@@ -28,15 +28,19 @@ class _NextEventPageState extends State<NextEventPage> {
     super.initState();
   }
 
-  @override
-  void didUpdateWidget(covariant NextEventPage oldWidget) {
-    widget.presenter.loadNextEvent(groupId: widget.groupId);
-    super.didUpdateWidget(oldWidget);
-  }
-
   void showLoading() => showDialog(
         context: context,
-        builder: (context) => CircularProgressIndicator(),
+        builder: (context) => SimpleDialog(
+          children: [
+            Column(
+              children: [
+                Text('Aguarde...', style: context.textStyles.labelLarge),
+                const SizedBox(height: 16),
+                const CircularProgressIndicator(),
+              ],
+            ),
+          ],
+        ),
       );
 
   void hideLoading() => Navigator.of(context).maybePop();
@@ -51,22 +55,32 @@ class _NextEventPageState extends State<NextEventPage> {
         stream: widget.presenter.nextEventStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.active) {
-            return const CircularProgressIndicator();
+            return Center(child: const CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Column(
-              children: [
-                const Text('Algo errado aconteceu. Tente novamente.'),
-                ElevatedButton(
-                  onPressed: () {
-                    widget.presenter.loadNextEvent(
-                      groupId: widget.groupId,
-                      isReload: true,
-                    );
-                  },
-                  child: const Text('Recarregar'),
-                ),
-              ],
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Algo errado aconteceu. Tente novamente.',
+                    style: context.textStyles.bodyLarge,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      widget.presenter.loadNextEvent(
+                        groupId: widget.groupId,
+                        isReload: true,
+                      );
+                    },
+                    child: Text(
+                      'RECARREGAR',
+                      style: context.textStyles.labelLarge,
+                    ),
+                  ),
+                ],
+              ),
             );
           }
 
@@ -132,8 +146,16 @@ final class ListSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Expanded(child: Text(title)),
-              Text(items.length.toString()),
+              Expanded(
+                child: Text(
+                  title,
+                  style: context.textStyles.titleSmall,
+                ),
+              ),
+              Text(
+                items.length.toString(),
+                style: context.textStyles.titleSmall,
+              ),
             ],
           ),
         ),
@@ -153,7 +175,10 @@ final class ListSection extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(player.name),
+                          Text(
+                            player.name,
+                            style: context.textStyles.labelLarge,
+                          ),
                           PlayerPosition(position: player.position),
                         ],
                       ),
