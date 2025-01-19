@@ -2,6 +2,7 @@ import 'package:advanced_flutter/presentation/presenters/next_event_presenter.da
 import 'package:advanced_flutter/ui/widgets/player_photo.dart';
 import 'package:advanced_flutter/ui/widgets/player_position.dart';
 import 'package:advanced_flutter/ui/widgets/player_status.dart';
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 import 'package:flutter/material.dart';
 
 final class NextEventPage extends StatefulWidget {
@@ -27,6 +28,12 @@ class _NextEventPageState extends State<NextEventPage> {
     super.initState();
   }
 
+  @override
+  void didUpdateWidget(covariant NextEventPage oldWidget) {
+    widget.presenter.loadNextEvent(groupId: widget.groupId);
+    super.didUpdateWidget(oldWidget);
+  }
+
   void showLoading() => showDialog(
         context: context,
         builder: (context) => CircularProgressIndicator(),
@@ -37,6 +44,9 @@ class _NextEventPageState extends State<NextEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Próximo Jogo'),
+      ),
       body: StreamBuilder<NextEventViewModel>(
         stream: widget.presenter.nextEventStream,
         builder: (context, snapshot) {
@@ -113,21 +123,50 @@ final class ListSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(title),
-        Text(items.length.toString()),
-        ...items.map(
-          (player) => Row(
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 8,
+            top: 32,
+          ),
+          child: Row(
             children: [
-              PlayerPhoto(
-                initials: player.initials,
-                photo: player.photo,
-              ),
-              Text(player.name),
-              PlayerPosition(position: player.position),
-              PlayerStatus(isConfirmed: player.isConfirmed),
+              Expanded(child: Text(title)),
+              Text(items.length.toString()),
             ],
           ),
         ),
+        Divider(),
+        ...items
+            .map(
+              (player) => Container(
+                color: context.colors.scheme.onSurface
+                    .withAlpha((0.03 * 255).toInt()),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    PlayerPhoto(initials: player.initials, photo: player.photo),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(player.name),
+                          PlayerPosition(position: player.position),
+                        ],
+                      ),
+                    ),
+                    PlayerStatus(isConfirmed: player.isConfirmed),
+                  ],
+                ),
+              ),
+            )
+            .separatedBy(const Divider(
+              indent: 82,
+            )),
+        const Divider(),
       ],
     );
   }

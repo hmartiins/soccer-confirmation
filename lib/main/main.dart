@@ -11,11 +11,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorSchema = ColorScheme.fromSeed(
+      seedColor: Colors.teal,
+      brightness: Brightness.dark,
+    );
+
     return MaterialApp(
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      debugShowCheckedModeBanner: false,
+      darkTheme: ThemeData(
+        dividerTheme: const DividerThemeData(space: 0),
+        appBarTheme: AppBarTheme(color: colorSchema.primaryContainer),
+        brightness: Brightness.dark,
+        colorScheme: colorSchema,
         useMaterial3: true,
       ),
+      themeMode: ThemeMode.dark,
       home: makeNextEventPage(),
     );
   }
