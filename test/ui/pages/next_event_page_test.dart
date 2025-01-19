@@ -157,7 +157,7 @@ void main() {
       find.text('Algo errado aconteceu. Tente novamente.'),
       findsOneWidget,
     );
-    expect(find.text('Recarregar'), findsOneWidget);
+    expect(find.text('RECARREGAR'), findsOneWidget);
   });
 
   testWidgets('should load event data on reload click', (tester) async {
@@ -168,7 +168,7 @@ void main() {
 
     presenter.emitError();
     await tester.pump();
-    await tester.tap(find.text('Recarregar'));
+    await tester.tap(find.text('RECARREGAR'));
     expect(presenter.callsCount, 2);
     expect(presenter.groupId, groupId);
     expect(presenter.isReload, true);
