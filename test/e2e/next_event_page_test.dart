@@ -1,4 +1,3 @@
-import 'package:advanced_flutter/domain/usecases/next_event_loader.dart';
 import 'package:advanced_flutter/infra/api/adapters/http_adapter.dart';
 import 'package:advanced_flutter/infra/api/repositories/load_next_event_api_repo.dart';
 import 'package:advanced_flutter/presentation/presenters/rx/next_event_rx_presenter.dart';
@@ -84,8 +83,7 @@ void main() {
     final httpClient = HttpAdapter(client: client);
     final repo =
         LoadNextEventApiRepository(httpClient: httpClient, url: anyString());
-    final nextEventLoader = NextEventLoader(repo: repo);
-    final presenter = NextEventRxPresenter(nextEventLoader: nextEventLoader);
+    final presenter = NextEventRxPresenter(nextEventLoader: repo.loadNextEvent);
     final sut = MaterialApp(
       home: NextEventPage(presenter: presenter, groupId: anyString()),
     );
