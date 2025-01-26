@@ -20,8 +20,8 @@ final class CacheManagerAdapter {
       return null;
     }
 
-    final data = await info.file.readAsString();
     try {
+      final data = await info.file.readAsString();
       return jsonDecode(data);
     } catch (e) {
       return null;
@@ -34,14 +34,17 @@ final class FileSpy implements File {
   int readAsStringCallsCount = 0;
   bool _fileExists = true;
   String _response = '{}';
+  Error? _readAsStringError;
 
   void simulateFileEmpty() => _fileExists = false;
+  void simulateReadAsStringError() => _readAsStringError = Error();
   void simulateInvalidResponse() => _response = 'invalid_json';
   void simulateResponse(String response) => _response = response;
 
   @override
   Future<String> readAsString({Encoding encoding = utf8}) async {
     readAsStringCallsCount++;
+    if (_readAsStringError != null) throw _readAsStringError!;
     return _response;
   }
 
@@ -410,5 +413,11 @@ void main() {
     final json = await sut.get(key: key);
     expect(json['key1'], 'value1');
     expect(json['key2'], 'value2');
+  });
+
+  test('should return null if file read.AsString fails', () async {
+    client.file.simulateReadAsStringError();
+    final json = await sut.get(key: key);
+    expect(json, isNull);
   });
 }
