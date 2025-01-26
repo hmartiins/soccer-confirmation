@@ -13,9 +13,8 @@ final class CacheManagerAdapter {
   CacheManagerAdapter({required this.client});
 
   Future<dynamic> get({required String key}) async {
-    final info = await client.getFileFromCache(key);
-
     try {
+      final info = await client.getFileFromCache(key);
       if (info?.validTill.isBefore(DateTime.now()) != false ||
           !await info!.file.exists()) {
         return null;
@@ -270,10 +269,12 @@ final class CacheManagerSpy implements BaseCacheManager {
   FileSpy file = FileSpy();
   bool _isFileInfoEmpty = false;
   DateTime _validTill = DateTime.now().add(const Duration(seconds: 2));
+  Error? _getFileFromCacheError;
 
   void simulateEmptyFileInfo() => _isFileInfoEmpty = true;
   void simulateCacheOld() =>
       _validTill = DateTime.now().subtract(const Duration(seconds: 2));
+  void simulateGetFileFromCacheError() => _getFileFromCacheError = Error();
 
   @override
   Future<FileInfo?> getFileFromCache(
@@ -282,6 +283,7 @@ final class CacheManagerSpy implements BaseCacheManager {
   }) async {
     getFileFromCacheCallsCount++;
     this.key = key;
+    if (_getFileFromCacheError != null) throw _getFileFromCacheError!;
     return _isFileInfoEmpty
         ? null
         : FileInfo(
@@ -426,6 +428,12 @@ void main() {
 
   test('should return null if file.exists fails ', () async {
     client.file.simulateExistsError();
+    final json = await sut.get(key: key);
+    expect(json, isNull);
+  });
+
+  test('should return null if getFileFromCache fails ', () async {
+    client.simulateGetFileFromCacheError();
     final json = await sut.get(key: key);
     expect(json, isNull);
   });
