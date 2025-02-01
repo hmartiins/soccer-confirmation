@@ -27,12 +27,7 @@ final class LoadNextEventFromApiWithCacheFallbackRepository {
       await cacheClient.save(key: '$key:$groupId', value: json);
       return event;
     } catch (_) {
-      await loadNextEventFromCache(groupId: groupId);
-      return NextEvent(
-        groupName: anyString(),
-        date: anyDateTime(),
-        players: [],
-      );
+      return await loadNextEventFromCache(groupId: groupId);
     }
   }
 }
@@ -154,5 +149,11 @@ void main() {
     await sut.loadNextEvent(groupId: groupId);
     expect(cacheRepo.groupId, groupId);
     expect(cacheRepo.callsCount, 1);
+  });
+
+  test('should return cache data when api fails', () async {
+    apiRepo.error = Error();
+    final event = await sut.loadNextEvent(groupId: groupId);
+    expect(event, cacheRepo.output);
   });
 }
