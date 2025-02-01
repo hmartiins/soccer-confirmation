@@ -103,8 +103,7 @@ void main() {
   test('should throw UnexpectedError when api and cache fails', () async {
     apiRepo.error = Error();
     cacheRepo.error = Error();
-    sut.loadNextEvent(groupId: groupId).then((_) {}, onError: (error) {
-      expect(error, isA<UnexpectedError>());
-    });
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(isA<UnexpectedError>()));
   });
 }

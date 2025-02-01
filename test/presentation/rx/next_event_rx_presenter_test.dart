@@ -45,7 +45,7 @@ void main() {
     expectLater(sut.isBusyStream, emitsInOrder([true, false]));
     expectLater(
       sut.nextEventStream,
-      emits(const TypeMatcher<NextEventViewModel>()),
+      emits(isA<NextEventViewModel>()),
     );
     await sut.loadNextEvent(groupId: groupId, isReload: true);
   });
@@ -54,7 +54,7 @@ void main() {
     sut.isBusyStream.listen(neverCalled);
     expectLater(
       sut.nextEventStream,
-      emits(const TypeMatcher<NextEventViewModel>()),
+      emits(isA<NextEventViewModel>()),
     );
     await sut.loadNextEvent(groupId: groupId);
   });
