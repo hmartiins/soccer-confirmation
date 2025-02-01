@@ -25,11 +25,7 @@ final class LoadNextEventFromApiWithCacheFallbackRepository {
       await cacheClient.save(key: '$key:$groupId', value: json);
       return event;
     } catch (_) {
-      try {
-        return await loadNextEventFromCache(groupId: groupId);
-      } catch (e) {
-        throw UnexpectedError();
-      }
+      return await loadNextEventFromCache(groupId: groupId);
     }
   }
 }
