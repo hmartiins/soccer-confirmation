@@ -8,22 +8,32 @@ import '../../mocks/fakes.dart';
 final class LoadNextEventFromApiWithCacheFallbackRepository {
   final Future<NextEvent> Function({required String groupId})
       loadNextEventFromApi;
+  final Future<NextEvent> Function({required String groupId})
+      loadNextEventFromCache;
   final CacheSaveClient cacheClient;
   final String key;
 
   const LoadNextEventFromApiWithCacheFallbackRepository({
     required this.loadNextEventFromApi,
+    required this.loadNextEventFromCache,
     required this.cacheClient,
     required this.key,
   });
 
   Future<NextEvent> loadNextEvent({required String groupId}) async {
-    final event = await loadNextEventFromApi(groupId: groupId);
-    final json = NextEventMapper().toJson(event);
-
-    await cacheClient.save(key: '$key:$groupId', value: json);
-
-    return event;
+    try {
+      final event = await loadNextEventFromApi(groupId: groupId);
+      final json = NextEventMapper().toJson(event);
+      await cacheClient.save(key: '$key:$groupId', value: json);
+      return event;
+    } catch (_) {
+      await loadNextEventFromCache(groupId: groupId);
+      return NextEvent(
+        groupName: anyString(),
+        date: anyDateTime(),
+        players: [],
+      );
+    }
   }
 }
 
@@ -35,10 +45,12 @@ final class LoadNextEventRepositorySpy {
     date: anyDateTime(),
     players: [],
   );
+  Error? error;
 
   Future<NextEvent> loadNextEvent({required String groupId}) async {
     this.groupId = groupId;
     callsCount++;
+    if (error != null) throw error!;
     return output;
   }
 }
@@ -62,6 +74,7 @@ void main() {
   late String key;
   late String groupId;
   late LoadNextEventRepositorySpy apiRepo;
+  late LoadNextEventRepositorySpy cacheRepo;
   late CacheSaveClientSpy cacheClient;
   late LoadNextEventFromApiWithCacheFallbackRepository sut;
 
@@ -69,11 +82,13 @@ void main() {
     key = anyString();
     groupId = anyString();
     apiRepo = LoadNextEventRepositorySpy();
+    cacheRepo = LoadNextEventRepositorySpy();
     cacheClient = CacheSaveClientSpy();
     sut = LoadNextEventFromApiWithCacheFallbackRepository(
       key: key,
       cacheClient: cacheClient,
       loadNextEventFromApi: apiRepo.loadNextEvent,
+      loadNextEventFromCache: cacheRepo.loadNextEvent,
     );
   });
 
@@ -132,5 +147,12 @@ void main() {
   test('should return api data on success', () async {
     final event = await sut.loadNextEvent(groupId: groupId);
     expect(event, apiRepo.output);
+  });
+
+  test('should load event data from cache repo when api fails', () async {
+    apiRepo.error = Error();
+    await sut.loadNextEvent(groupId: groupId);
+    expect(cacheRepo.groupId, groupId);
+    expect(cacheRepo.callsCount, 1);
   });
 }
