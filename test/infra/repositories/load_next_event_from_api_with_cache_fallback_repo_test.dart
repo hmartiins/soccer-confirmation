@@ -1,3 +1,4 @@
+import 'package:advanced_flutter/domain/entities/errors.dart';
 import 'package:advanced_flutter/domain/entities/next_event.dart';
 import 'package:advanced_flutter/domain/entities/next_event_player.dart';
 import 'package:advanced_flutter/infra/repositories/load_next_event_from_api_with_cache_fallback_repo.dart';
@@ -98,6 +99,12 @@ void main() {
     apiRepo.error = Error();
     final event = await sut.loadNextEvent(groupId: groupId);
     expect(event, cacheRepo.output);
+  });
+
+  test('should rethrow api error when its SessionExpiredError', () async {
+    apiRepo.error = SessionExpiredError();
+    final future = sut.loadNextEvent(groupId: groupId);
+    expect(future, throwsA(apiRepo.error));
   });
 
   test('should rethrow cache error when api and cache fails', () async {
