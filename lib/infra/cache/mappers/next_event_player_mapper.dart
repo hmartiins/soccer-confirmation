@@ -1,5 +1,6 @@
 import 'package:advanced_flutter/domain/entities/next_event_player.dart';
 import 'package:advanced_flutter/infra/api/mappers/mapper.dart';
+import 'package:advanced_flutter/infra/types/json.dart';
 
 final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
   @override
@@ -11,4 +12,16 @@ final class NextEventPlayerMapper extends Mapper<NextEventPlayer> {
         isConfirmed: json['isConfirmed'],
         confirmationDate: json['confirmationDate'],
       );
+
+  JsonArr toJsonArr(List<NextEventPlayer> players) =>
+      players.map((player) => toJson(player)).toList();
+
+  Json toJson(NextEventPlayer event) => {
+        'id': event.id,
+        'name': event.name,
+        'photo': event.photo,
+        'position': event.position,
+        'isConfirmed': event.isConfirmed,
+        'confirmationDate': event.confirmationDate,
+      };
 }
