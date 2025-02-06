@@ -7,7 +7,10 @@ import 'file_spy.dart';
 
 final class CacheManagerSpy implements BaseCacheManager {
   int getFileFromCacheCallsCount = 0;
+  int putFileCallsCount = 0;
   String? key;
+  String? fileExtension;
+  Uint8List? fileBytes;
   FileSpy file = FileSpy();
   bool _isFileInfoEmpty = false;
   DateTime _validTill = DateTime.now().add(const Duration(seconds: 2));
@@ -34,6 +37,19 @@ final class CacheManagerSpy implements BaseCacheManager {
             _validTill,
             '',
           );
+  }
+
+  @override
+  Future<File> putFile(String url, Uint8List fileBytes,
+      {String? key,
+      String? eTag,
+      Duration maxAge = const Duration(days: 30),
+      String fileExtension = 'file'}) async {
+    putFileCallsCount++;
+    this.key = url;
+    this.fileExtension = fileExtension;
+    this.fileBytes = fileBytes;
+    return file;
   }
 
   @override
@@ -72,15 +88,6 @@ final class CacheManagerSpy implements BaseCacheManager {
   @override
   Future<File> getSingleFile(String url,
       {String? key, Map<String, String>? headers}) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<File> putFile(String url, Uint8List fileBytes,
-      {String? key,
-      String? eTag,
-      Duration maxAge = const Duration(days: 30),
-      String fileExtension = 'file'}) {
     throw UnimplementedError();
   }
 
