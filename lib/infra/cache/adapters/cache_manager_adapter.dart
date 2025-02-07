@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:advanced_flutter/domain/entities/errors.dart';
 import 'package:advanced_flutter/infra/cache/clients/cache_get_client.dart';
 import 'package:advanced_flutter/infra/cache/clients/cache_save_client.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -28,10 +28,14 @@ final class CacheManagerAdapter implements CacheGetClient, CacheSaveClient {
 
   @override
   Future<void> save({required String key, required dynamic value}) async {
-    await client.putFile(
-      key,
-      utf8.encode(jsonEncode(value)),
-      fileExtension: 'json',
-    );
+    try {
+      await client.putFile(
+        key,
+        utf8.encode(jsonEncode(value)),
+        fileExtension: 'json',
+      );
+    } catch (e) {
+      throw UnexpectedError();
+    }
   }
 }
