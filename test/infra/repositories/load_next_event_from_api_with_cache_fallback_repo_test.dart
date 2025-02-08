@@ -40,7 +40,7 @@ void main() {
   test('should save event data from api on cache', () async {
     apiRepo.output = NextEvent(
       groupName: anyString(),
-      date: anyDateTime(),
+      date: DateTime(2025, 1, 1, 9, 30),
       players: [
         NextEventPlayer(
           id: anyString(),
@@ -53,7 +53,7 @@ void main() {
           isConfirmed: anyBool(),
           photo: anyString(),
           position: anyString(),
-          confirmationDate: anyDateTime(),
+          confirmationDate: DateTime(2025, 3, 1, 9, 30),
         ),
       ],
     );
@@ -61,7 +61,7 @@ void main() {
     expect(cacheClient.key, '$key:$groupId');
     expect(cacheClient.value, {
       'groupName': apiRepo.output.groupName,
-      'date': apiRepo.output.date,
+      'date': '2025-01-01T09:30:00.000',
       'players': [
         {
           'id': apiRepo.output.players[0].id,
@@ -77,7 +77,7 @@ void main() {
           'isConfirmed': apiRepo.output.players[1].isConfirmed,
           'photo': apiRepo.output.players[1].photo,
           'position': apiRepo.output.players[1].position,
-          'confirmationDate': apiRepo.output.players[1].confirmationDate,
+          'confirmationDate': '2025-03-01T09:30:00.000',
         },
       ],
     });
