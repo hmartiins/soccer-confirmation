@@ -11,7 +11,7 @@ final class CacheManagerSpy implements BaseCacheManager {
   int putFileCallsCount = 0;
   String? key;
   String? fileExtension;
-  dynamic? fileBytesDecoded;
+  dynamic fileBytesDecoded;
   FileSpy file = FileSpy();
   bool _isFileInfoEmpty = false;
   DateTime _validTill = DateTime.now().add(const Duration(seconds: 2));
